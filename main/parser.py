@@ -1,4 +1,5 @@
 #    Copyright (C) 2016 Bror Hultberg
+#    Copyright (C) 2016 Joonas Kylmälä
 
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -123,39 +124,47 @@ def prepros(filename):
     return(cohorts)
 
 
-def wordclass(filename):
-    return(remove_useless(filename,lambda x:x.tags[0]))
+def wordclass(cohorts):
+    return(get_features(cohorts,lambda x:x.tags[0]))
     
-def baseform(filename):
-    return(remove_useless(filename,lambda x:x.baseform))
+def baseform(cohorts):
+    return(get_features(cohorts,lambda x:x.baseform))
 
-def remove_useless(filename,feature): 
-    useless=['sent','cm','lquot','rquot','lpar','rpar','guio']
-    features=[]
-    cohorts=prepros(filename)
+def get_features(cohorts,feature): 
+    features = []
     for cohort in cohorts:
         posfeatures=set()
-        base=[] 
         for reading in cohort.readings:
             for subreading in reading:
-                if all(x not in subreading.tags for x in useless):
-                    posfeatures.add(feature(subreading))
+                posfeatures.add(feature(subreading))
         if posfeatures:
             features.append(list(posfeatures))
     return(features)
 
+def remove_useless(cohorts):
+    for cohort in cohorts:
+        useless = False
+        for reading in cohort.readings:
+            for subreading in reading:
+                if is_useless(subreading):
+                    useless = True
+        if not useless:
+            yield cohort
 
+def is_useless(subreading):
+    useless_tags = ['sent','cm','lquot','rquot','lpar','rpar','guio']
+    for tag in subreading.tags:
+        if tag in useless_tags:
+            return True
+    return False
 
-def rem_useless(parsed):
-    useless=['streamparser.unknown',"tags=['sent']","tags=['cm']","tags=['lquot']","tags=['rquot']","tags=['lpar']","tags=['rpar']", "tags=[\'apos\']", "tags=['guio']" ]
-    parsed_useful = [item for item in parsed.reading if not any([x in item for x in useless]) ]
-    return(parsed_useful)
+def main():
+    corpus_filename = input()
+    cohorts = prepros(corpus_filename)
+    cohorts = remove_useless(cohorts)
 
+    probabilities = prob(wordclass(cohorts))
 
+    print(probabilities)
 
-
-x=input()
-
-print(prob(wordclass(x)))
-
-
+main()
