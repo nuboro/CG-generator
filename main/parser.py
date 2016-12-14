@@ -15,9 +15,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import sys
 from streamparser import parse
+from streamparser import parse_file
+
 
 def combine(a):
     if len(a)==1:
@@ -115,14 +116,8 @@ def prob(items):
     return(feature_pos)
 
 def prepros(filename):
-    try:
-        with open(filename, 'r') as data:
-            plaintext = data.read()
-    except OSError:
-        plaintext=filename 
-    cohorts = parse(plaintext)
+    cohorts = parse_file(open(filename))
     return(cohorts)
-
 
 def wordclass(cohorts):
     return(get_features(cohorts,lambda x:x.tags[0]))
