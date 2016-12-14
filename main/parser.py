@@ -87,13 +87,13 @@ def barrier(x,start,end):
 
 
 
-def prob(cohort):
+def prob(cohort, wordcount):
     baseforms=[]  
     for baseform in cohort:
         baseforms.append(baseform) 
     word_pos = {x:baseforms.count(x) for x in baseforms}
     for seq in  word_pos:
-        word_pos[seq]=word_pos[seq]/len(cohort)
+        word_pos[seq]=word_pos[seq]/wordcount
     return(word_pos)
 
 
@@ -108,8 +108,11 @@ def rem_useless(parsed):
 
       
 
+
+
 def get_basewords(filename):
     useless=['sent','cm','lquot','rquot','lpar','rpar','guio']
+    i=0
     try:
         with open(filename, 'r') as data:
             plaintext = data.read()
@@ -118,21 +121,19 @@ def get_basewords(filename):
     baseforms=[]
     cohorts = parse(plaintext)
     for cohort in cohorts: 
-       for reading in cohort.readings:
+        i=i+1
+        for reading in cohort.readings:
            if reading:
-               print(reading[0].baseform)
                reading=reading[0]
-
                if all(x not in reading.tags for x in useless): 
+                   baseforms.append(reading.baseform)
+               else:
+                   i=i-1
+    return(baseforms, i)
  
 
-                   baseforms.append(reading.baseform)
 
-    return(baseforms)
-
-         
 
 x=input()
-
-print(prob(get_basewords(x)))
-
+m=get_basewords(x)
+print(prob(m[0],m[1]))
