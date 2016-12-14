@@ -92,9 +92,8 @@ def prob(items):
     for item in items:
         for feature in item:
             features.append(feature) 
-    feature_pos = {x:features.count(x) for x in features}
-    for seq in  feature_pos:
-        feature_pos[seq]=feature_pos[seq]/len(items)
+    feature_pos = {x:features.count(x)/len(items) for x in features}
+
     return(feature_pos)
 
 def prepros(filename):
@@ -115,18 +114,18 @@ def baseform(filename):
 
 def remove_useless(filename,feature): 
     useless=['sent','cm','lquot','rquot','lpar','rpar','guio']
-    baseforms=[]
+    features=[]
     cohorts=prepros(filename)
     for cohort in cohorts:
-        posbaseforms=set()
+        posfeatures=set()
         base=[] 
         for reading in cohort.readings:
             for subreading in reading:
                 if all(x not in subreading.tags for x in useless):
-                    posbaseforms.add(feature(subreading))
-        if posbaseforms:
-            baseforms.append(list(posbaseforms))
-    return(baseforms)
+                    posfeatures.add(feature(subreading))
+        if posfeatures:
+            features.append(list(posfeatures))
+    return(features)
 
 
 
@@ -141,4 +140,5 @@ def rem_useless(parsed):
 x=input()
 
 print(prob(wordclass(x)))
+
 
