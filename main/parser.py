@@ -87,53 +87,53 @@ def barrier(x,start,end):
 
 
 
-def prob(cohort, wordcount):
+def prob(cohorts):
     baseforms=[]  
-    for baseform in cohort:
-        baseforms.append(baseform) 
+    for cohort in cohorts:
+        for baseform in cohort:
+            baseforms.append(baseform) 
     word_pos = {x:baseforms.count(x) for x in baseforms}
     for seq in  word_pos:
-        word_pos[seq]=word_pos[seq]/wordcount
+        word_pos[seq]=word_pos[seq]/len(cohorts)
     return(word_pos)
 
-
-
-   
-  
-def rem_useless(parsed):
-    useless=['streamparser.unknown',"tags=['sent']","tags=['cm']","tags=['lquot']","tags=['rquot']","tags=['lpar']","tags=['rpar']", "tags=[\'apos\']", "tags=['guio']" ]
-    parsed_useful = [item for item in parsed if not any([x in item for x in useless]) ]
-
-    return(parsed_useful)
-
-      
-
-
-
-def get_basewords(filename):
-    useless=['sent','cm','lquot','rquot','lpar','rpar','guio']
-    i=0
+def prepros(filename):
     try:
         with open(filename, 'r') as data:
             plaintext = data.read()
     except OSError:
         plaintext=filename 
-    baseforms=[]
     cohorts = parse(plaintext)
-    for cohort in cohorts: 
-        i=i+1
-        for reading in cohort.readings:
-           if reading:
-               reading=reading[0]
-               if all(x not in reading.tags for x in useless): 
-                   baseforms.append(reading.baseform)
-               else:
-                   i=i-1
-    return(baseforms, i)
+    return(cohorts)
  
+def base(filename):
+    useless=['sent','cm','lquot','rquot','lpar','rpar','guio']
+    baseforms=[]
+    cohorts=prepros(filename)
+    for cohort in cohorts:
+        posbaseforms=set()
+        base=[] 
+        for reading in cohort.readings:
+            for subreading in reading:
+                if all(x not in subreading.tags for x in useless):
+                    posbaseforms.add(subreading.baseform)
+        if posbaseforms:
+            baseforms.append(list(posbaseforms))
+    return(baseforms)
+
+
+  
+  
+def rem_useless(parsed):
+    useless=['streamparser.unknown',"tags=['sent']","tags=['cm']","tags=['lquot']","tags=['rquot']","tags=['lpar']","tags=['rpar']", "tags=[\'apos\']", "tags=['guio']" ]
+    parsed_useful = [item for item in parsed.reading if not any([x in item for x in useless]) ]
+    return(parsed_useful)
+
 
 
 
 x=input()
-m=get_basewords(x)
-print(prob(m[0],m[1]))
+
+print(prob(base(x)))
+
+
