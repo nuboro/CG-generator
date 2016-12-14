@@ -87,15 +87,15 @@ def barrier(x,start,end):
 
 
 
-def prob(cohorts):
-    baseforms=[]  
-    for cohort in cohorts:
-        for baseform in cohort:
-            baseforms.append(baseform) 
-    word_pos = {x:baseforms.count(x) for x in baseforms}
-    for seq in  word_pos:
-        word_pos[seq]=word_pos[seq]/len(cohorts)
-    return(word_pos)
+def prob(items):
+    features=[]  
+    for item in items:
+        for feature in item:
+            features.append(feature) 
+    feature_pos = {x:features.count(x) for x in features}
+    for seq in  feature_pos:
+        feature_pos[seq]=feature_pos[seq]/len(items)
+    return(feature_pos)
 
 def prepros(filename):
     try:
@@ -105,8 +105,15 @@ def prepros(filename):
         plaintext=filename 
     cohorts = parse(plaintext)
     return(cohorts)
- 
-def base(filename):
+
+
+def wordclass(filename):
+    return(remove_useless(filename,lambda x:x.tags[0]))
+    
+def baseform(filename):
+    return(remove_useless(filename,lambda x:x.baseform))
+
+def remove_useless(filename,feature): 
     useless=['sent','cm','lquot','rquot','lpar','rpar','guio']
     baseforms=[]
     cohorts=prepros(filename)
@@ -116,14 +123,13 @@ def base(filename):
         for reading in cohort.readings:
             for subreading in reading:
                 if all(x not in subreading.tags for x in useless):
-                    posbaseforms.add(subreading.baseform)
+                    posbaseforms.add(feature(subreading))
         if posbaseforms:
             baseforms.append(list(posbaseforms))
     return(baseforms)
 
 
-  
-  
+
 def rem_useless(parsed):
     useless=['streamparser.unknown',"tags=['sent']","tags=['cm']","tags=['lquot']","tags=['rquot']","tags=['lpar']","tags=['rpar']", "tags=[\'apos\']", "tags=['guio']" ]
     parsed_useful = [item for item in parsed.reading if not any([x in item for x in useless]) ]
@@ -134,6 +140,5 @@ def rem_useless(parsed):
 
 x=input()
 
-print(prob(base(x)))
-
+print(prob(wordclass(x)))
 
