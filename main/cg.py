@@ -22,7 +22,7 @@ class List:
         self.taglist = taglist
 
     def __str__(self):
-        return('LIST '+self.setname+' = '+self.taglist+' ;')
+        return('LIST ' + self.setname + ' = ' + self.taglist + ' ;')
 
 
 class Set:
@@ -31,7 +31,7 @@ class Set:
         self.inlineset = inlineset
 
     def __str__(self):
-        return('SET '+self.setname+' = '+self.inlineset+' ;')
+        return('SET ' + self.setname + ' = ' + self.inlineset + ' ;')
 
 
 class Select:
@@ -49,7 +49,7 @@ class Remove:
         self.match = match
 
     def __str__(self):
-        return("REMOVE " + self.target + " IF " + self.match+' ;')
+        return("REMOVE " + self.target + " IF " + self.match + ' ;')
 
 
 class Rule(Select, Remove):
@@ -65,15 +65,14 @@ class CG:
         self.sets = sets
 
     def __str__(self):
-        print(self.delimiters)
-        print(self.soft_delimiters)
-        print('SETS')
+        finalcg = self.delimiters + "\n" + self.soft_delimiters + "\n" + 'SETS'
         for set in self.sets:
-            print(set)
-        print('SECTION')
+            finalcg = finalcg + str(set) + "\n"
+        finalcg = finalcg + 'SECTION'
         for rule in self.rules:
-            print(rule)
-        return('SELECT (x);')
+            finalcg = finalcg + str(rule) + "\n"
+        finalcg = finalcg + 'SELECT (x);'
+        return(finalcg)
 
 
 set1 = List(setname="Pr", taglist="(pr)")
@@ -94,4 +93,5 @@ soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'
 
 cg = CG(delimiters, soft_delimiters, rules, sets)
 print(cg)
+
 
