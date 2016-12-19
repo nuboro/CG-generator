@@ -16,51 +16,54 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 class List:
-    def __init__(self,setname,taglist):
-        self.setname=setname 
-        self.taglist=taglist
+    def __init__(self, setname, taglist):
+        self.setname = setname
+        self.taglist = taglist
+
     def __str__(self):
         return('LIST '+self.setname+' = '+self.taglist+' ;')
 
 
-class Setter:    
-    def __init__(self,setname,inlineset): 
-    	self.setname=setname 
-    	self.inlineset=inlineset
+class Set:
+    def __init__(self, setname, inlineset):
+        self.setname = setname
+        self.inlineset = inlineset
+
     def __str__(self):
         return('SET '+self.setname+' = '+self.inlineset+' ;')
 
+
 class Select:
-    def __init__(self,target,match):
-        self.target=target 
-        self.match=match 
+    def __init__(self, target, match):
+        self.target = target
+        self.match = match
 
     def __str__(self):
-    	return("SELECT "+self.target+" IF "+self.match+' ;')
+        return("SELECT " + self.target + " IF " + self.match + ' ;')
+
 
 class Remove:
-    def __init__(self,target,match):
-        self.target=target 
-        self.match=match 
+    def __init__(self, target, match):
+        self.target = target
+        self.match = match
 
     def __str__(self):
-    	return("REMOVE "+self.target+" IF "+self.match+' ;')
+        return("REMOVE " + self.target + " IF " + self.match+' ;')
 
 
-class Set(List,Setter):
-	pass
-class Rule(Select,Remove):
-    pass	 
+class Rule(Select, Remove):
+    pass
 
-class CG(Rule,Set):
 
-    def __init__(self,delimiters,soft_delimiters,rules,sets):
-        self.delimiters=delimiters
-        self.soft_delimiters=soft_delimiters
-        self.rules=rules
-        self.sets=sets
+class CG:
+
+    def __init__(self, delimiters, soft_delimiters, rules, sets):
+        self.delimiters = delimiters
+        self.soft_delimiters = soft_delimiters
+        self.rules = rules
+        self.sets = sets
+
     def __str__(self):
         print(self.delimiters)
         print(self.soft_delimiters)
@@ -75,7 +78,7 @@ class CG(Rule,Set):
 
 set1 = List(setname="Pr", taglist="(pr)")
 set2 = List(setname="Adj", taglist="(adj)")
-set3 = Setter(setname="N", inlineset="(1 VERB)")
+set3 = Set(setname="N", inlineset="(1 VERB)")
 
 rule1 = Select(target="N", match="(1 VERB)")
 rule2 = Select(target="N", match="(-1 ADJ)")
@@ -83,9 +86,12 @@ rule3 = Remove(target="N", match="(1 VERB)")
 
 
 rules = [rule1, rule2, rule3]
-sets=[set1,set2,set3]
+sets = [set1, set2, set3]
 cg = CG
 
+delimiters = 'DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;'
+soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'
 
-cg=CG('DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;','SOFT-DELIMITERS = "<,>" ;',rules,sets)
+cg = CG(delimiters, soft_delimiters, rules, sets)
 print(cg)
+
