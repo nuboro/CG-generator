@@ -71,7 +71,6 @@ class CG:
         finalcg = finalcg + 'SECTION'
         for rule in self.rules:
             finalcg = finalcg + str(rule) + "\n"
-        finalcg = finalcg + 'SELECT (x);'
         return(finalcg)
 
 
