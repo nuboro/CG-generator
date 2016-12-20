@@ -34,7 +34,11 @@ class Set:
         return('SET ' + self.setname + ' = ' + self.inlineset + ' ;')
 
 
-class Select:
+class Rule:
+    pass
+    
+
+class Select(Rule):
     def __init__(self, target, match):
         self.target = target
         self.match = match
@@ -43,17 +47,13 @@ class Select:
         return("SELECT " + self.target + " IF " + self.match + ' ;')
 
 
-class Remove:
+class Remove(Rule):
     def __init__(self, target, match):
         self.target = target
         self.match = match
 
     def __str__(self):
         return("REMOVE " + self.target + " IF " + self.match + ' ;')
-
-
-class Rule(Select, Remove):
-    pass
 
 
 class CG:
@@ -92,5 +92,3 @@ soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'
 
 cg = CG(delimiters, soft_delimiters, rules, sets)
 print(cg)
-
-
