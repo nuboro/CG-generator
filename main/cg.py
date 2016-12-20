@@ -35,13 +35,15 @@ class Set:
 
 
 class Rule:
-    pass
+    def __init__(self, target, match):
+        self.target = target
+        self.match = match
+    
     
 
 class Select(Rule):
     def __init__(self, target, match):
-        self.target = target
-        self.match = match
+        super().__init__(target, match)
 
     def __str__(self):
         return("SELECT " + self.target + " IF " + self.match + ' ;')
@@ -49,8 +51,7 @@ class Select(Rule):
 
 class Remove(Rule):
     def __init__(self, target, match):
-        self.target = target
-        self.match = match
+        super().__init__(target, match)
 
     def __str__(self):
         return("REMOVE " + self.target + " IF " + self.match + ' ;')
@@ -65,10 +66,10 @@ class CG:
         self.sets = sets
 
     def __str__(self):
-        finalcg = self.delimiters + "\n" + self.soft_delimiters + "\n" + 'SETS'
+        finalcg = self.delimiters + "\n" + self.soft_delimiters + '\n\nSETS\n\n'
         for set in self.sets:
             finalcg = finalcg + str(set) + "\n"
-        finalcg = finalcg + 'SECTION'
+        finalcg = finalcg + '\nSECTION\n\n'
         for rule in self.rules:
             finalcg = finalcg + str(rule) + "\n"
         return(finalcg)
