@@ -46,11 +46,6 @@ def features_between(sequence, start, end):
     return(features)
 
 
-def pos(my_list, element):
-    indices = [i for i, x in enumerate(my_list) if x == element]
-    return(indices)
-
-
 def barrier(x, start, end):
     """returns a set of set of features(barrier) from given cohorts (x) that occur between string:"start" and string:"end"
     """
