@@ -18,6 +18,7 @@
 
 
 import sys
+import fileinput
 from streamparser import parse   #[['vblex', 'n']]
 from streamparser import parse_file #[['vblex','vblex'],['n','vblex']]
 
@@ -58,9 +59,9 @@ def pos(my_list,element):
 
 
 def barrier(x,start,end):
-    """returns a set of set of features(barrier) from a string/filename(apertium stream format) that occur between string:"start" and string:"end" 
+    """returns a set of set of features(barrier) from given cohorts (x) that occur between string:"start" and string:"end" 
     """ 
-    list_of_features=combine(wordclass(prepros(x)))
+    list_of_features=combine(wordclass(x))
     final_barrier=set()
     for sequence in  list_of_features:
         froz_barrier=bar(sequence,start,end) 
@@ -77,10 +78,6 @@ def prob(items):
     feature_pos = {x:features.count(x)/len(items) for x in features}
 
     return(feature_pos)
-
-def prepros(filename):
-    cohorts = parse_file(open(filename))
-    return(cohorts)
 
 def wordclass(cohorts):
     return(get_features(cohorts,lambda x:x.tags[0]))
@@ -119,8 +116,7 @@ def is_useless(subreading):
     return False
 
 def main():
-    corpus_filename = input()
-    cohorts = prepros(corpus_filename)
+    cohorts = parse_file(fileinput.input())
     cohorts = remove_useless(cohorts)
     probabilities = prob(wordclass(cohorts))
 
