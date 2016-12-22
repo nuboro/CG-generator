@@ -116,7 +116,9 @@ def main():
     print(probabilities)
 
 
-main()
+if __name__ == '__main__':
+    main()
+
 # x=input()
 # y=input()
 # z=input()
