@@ -27,24 +27,23 @@ def combine(a):
         return([[x]+y for x in a[0] for y in combine(a[1:])])
 
 
-def bar(a, start, end):
-    """returns a set of features(barrier) from list:"a" that occur between string:"start" and string:"end"
-    """
-    finalbarrier = set()
-    for j in range(len(a)):
+def features_between(sequence, start, end):
+    """Return from sequence features that are between the start and end tag"""
+    features = set()
+    for j in range(len(sequence)):
         barrier = set()
-        if a[j] == start:
+        if sequence[j] == start:
             try:
-                for i in range(len(a)-j+1):
-                    if a[i+j+1] != end:
-                        barrier.add(a[i+j+1])
+                for i in range(len(sequence)-j+1):
+                    if sequence[i+j+1] != end:
+                        barrier.add(sequence[i+j+1])
                     else:
                         froz_barrier = frozenset(barrier)
-                        finalbarrier.add(froz_barrier)
+                        features.add(froz_barrier)
                         break
             except IndexError:
                 barrier.clear()
-    return(finalbarrier)
+    return(features)
 
 
 def pos(my_list, element):
@@ -58,7 +57,7 @@ def barrier(x, start, end):
     list_of_features = combine(wordclass(x))
     final_barrier = set()
     for sequence in list_of_features:
-        froz_barrier = bar(sequence, start, end)
+        froz_barrier = features_between(sequence, start, end)
         final_barrier = final_barrier | froz_barrier
     return(final_barrier)
 
