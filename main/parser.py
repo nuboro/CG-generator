@@ -66,6 +66,15 @@ def prob(items):
 
     return(feature_pos)
 
+def ngram_count(items, n):
+    features = []  
+    for j in range(len(items)-n+1):
+        possible_contexts = items[j:j+n] 
+        features = features + combine(possible_contexts)
+    features = tuple(tuple(feature) for feature in features)
+    feature_count = {feature:features.count(feature) for feature in features}
+    return(feature_count)
+
 
 def wordclass(cohorts):
     return(get_features(cohorts, lambda x: x.tags[0]))
