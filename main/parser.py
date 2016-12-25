@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import math
+import collections
 import fileinput
 from streamparser import parse_file
 
@@ -62,15 +64,16 @@ def prob(items):
 
     return(feature_pos)
 
+
 def ngram_count(items, n):
-    features = []  
+    features = []
     for j in range(len(items)-n+1):
-        possible_contexts = items[j:j+n] 
+        possible_contexts = items[j:j+n]
         features = features + combine(possible_contexts)
     features = tuple(tuple(feature) for feature in features)
     feature_count = {feature: 0 for feature in features}
     for feature in features:
-        feature_count[feature]=feature_count[feature]+1    
+        feature_count[feature] = feature_count[feature] + 1
     return(feature_count)
 
 
@@ -107,7 +110,8 @@ def remove_useless(cohorts):
 
 
 def is_useless(subreading):
-    useless_tags = ['sent', 'cm', 'lquot', 'rquot', 'lpar', 'rpar', 'guio', 'lquest']
+    useless_tags = ['sent', 'cm', 'lquot', 'rquot', 'lpar', 'rpar',
+                    'guio', 'lquest']
     for tag in subreading.tags:
         print(subreading)
         if tag in useless_tags:
@@ -185,6 +189,6 @@ if __name__ == '__main__':
 # print(combine(wordclass(prepros(x))))
 # print(barrier(x,y,z))
 
-#for seq in pos_bigrams(wordclass(remove_useless(parse_file(open(x))))):
-#    print(prob_1C(wordclass(remove_useless(parse_file(open(x)))), seq))
-#    print(prob_negative_1C(wordclass(remove_useless(parse_file(open(x)))), seq))
+# for seq in pos_bigrams(wordclass(remove_useless(parse_file(open(x))))):
+#     print(prob_1C(wordclass(remove_useless(parse_file(open(x)))), seq))
+#     print(prob_negative_1C(wordclass(remove_useless(parse_file(open(x)))), seq))
