@@ -68,7 +68,9 @@ def ngram_count(items, n):
         possible_contexts = items[j:j+n] 
         features = features + combine(possible_contexts)
     features = tuple(tuple(feature) for feature in features)
-    feature_count = {feature:features.count(feature) for feature in features}
+    feature_count = {feature: 0 for feature in features}
+    for feature in features:
+        feature_count[feature]=feature_count[feature]+1    
     return(feature_count)
 
 
@@ -105,7 +107,7 @@ def remove_useless(cohorts):
 
 
 def is_useless(subreading):
-    useless_tags = ['sent', 'cm', 'lquot', 'rquot', 'lpar', 'rpar', 'guio']
+    useless_tags = ['sent', 'cm', 'lquot', 'rquot', 'lpar', 'rpar', 'guio', 'lquest']
     for tag in subreading.tags:
         print(subreading)
         if tag in useless_tags:
