@@ -117,6 +117,59 @@ def is_useless(subreading):
     return False
 
 
+def moivre_laplace_probability(corpus, bigram, f, N):
+    P = f + 1.96 * math.sqrt(f*(1-f)/N)
+    return(P)
+
+
+def upper_limit_zero_relative(N):
+    P = 1-0.025**(1/N)
+    return(P)
+
+
+def frequency_count(corpus, feature):
+    N = ngram_count(corpus, 1)[(feature,)]
+    return(N)
+
+
+def relative_frequence(corpus, bigram, feature):
+    f = ngram_count(corpus, 2)[bigram]/ngram_count(corpus, 1)[(feature,)]
+    return(f)
+
+
+def probability(corpus, bigram, position):
+    P_of_bigram = {}
+    feat_in_con = collections.namedtuple('feat_in_con', 'bigram feature')
+    feature = bigram[position]
+    P = get_upper_limit(corpus, feature, bigram)
+    P_of_bigram[feat_in_con(bigram, position)] = P
+    return(P_of_bigram)
+
+
+def get_upper_limit(corpus, feature, bigram):
+    N = frequency_count(corpus, feature)
+    f = relative_frequence(corpus, bigram, feature)
+    context = bigram[(bigram.index(feature) + 1) % 2]
+    if bigram in ngram_count(corpus, 2):
+        P = (moivre_laplace_probability(corpus, bigram, f, N))
+    else:
+        P = (upper_limit_zero_relative(N))
+    return(P)
+
+
+def pos_bigrams(items):
+    ngrams = ngram_count(items, 2)
+    return(list(ngrams.keys()))
+
+
+def prob_1C(corpus, bigram):
+    return(probability(corpus, bigram, 0))
+
+
+def prob_negative_1C(corpus, bigram):
+    return(probability(corpus, bigram, 1))
+
+
 def main():
     cohorts = parse_file(fileinput.input())
     cohorts = remove_useless(cohorts)
@@ -134,3 +187,7 @@ if __name__ == '__main__':
 # print(wordclass(prepros(x)))
 # print(combine(wordclass(prepros(x))))
 # print(barrier(x,y,z))
+
+#for seq in pos_bigrams(wordclass(remove_useless(parse_file(open(x))))):
+#    print(prob_1C(wordclass(remove_useless(parse_file(open(x)))), seq))
+#    print(prob_negative_1C(wordclass(remove_useless(parse_file(open(x)))), seq))
