@@ -149,7 +149,6 @@ def probability(corpus, bigram, position):
 def get_upper_limit(corpus, feature, bigram):
     N = frequency_count(corpus, feature)
     f = relative_frequence(corpus, bigram, feature)
-    context = bigram[(bigram.index(feature) + 1) % 2]
     if bigram in ngram_count(corpus, 2):
         P = (moivre_laplace_probability(corpus, bigram, f, N))
     else:
