@@ -30,19 +30,15 @@ def combine(a):
 def features_between(sequence, start, end):
     """Return from sequence features that are between the start and end tag"""
     features = set()
-    for j in range(len(sequence)):
-        barrier = set()
-        if sequence[j] == start:
-            try:
-                for i in range(len(sequence)-j+1):
-                    if sequence[i+j+1] != end:
-                        barrier.add(sequence[i+j+1])
-                    else:
-                        froz_barrier = frozenset(barrier)
-                        features.add(froz_barrier)
-                        break
-            except IndexError:
-                barrier.clear()
+    for feat_position, first_feature in enumerate(sequence):
+        if first_feature == start:
+            candidate_features = set()
+            for later_feature in sequence[feat_position + 1:]:
+                if later_feature != end:
+                    candidate_features.add(later_feature)
+                else:
+                    features.add(frozenset(candidate_features))
+                    break
     return(features)
 
 
