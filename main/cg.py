@@ -75,21 +75,25 @@ class CG:
         return(finalcg)
 
 
-set1 = List(setname="Pr", taglist="(pr)")
-set2 = List(setname="Adj", taglist="(adj)")
-set3 = Set(setname="N", inlineset="(1 VERB)")
+def main():
+    set1 = List(setname="Pr", taglist="(pr)")
+    set2 = List(setname="Adj", taglist="(adj)")
+    set3 = Set(setname="N", inlineset="(1 VERB)")
 
-rule1 = Select(target="N", match="(1 VERB)")
-rule2 = Select(target="N", match="(-1 ADJ)")
-rule3 = Remove(target="N", match="(1 VERB)")
+    rule1 = Select(target="N", match="(1 VERB)")
+    rule2 = Select(target="N", match="(-1 ADJ)")
+    rule3 = Remove(target="N", match="(1 VERB)")
 
 
-rules = [rule1, rule2, rule3]
-sets = [set1, set2, set3]
-cg = CG
+    rules = [rule1, rule2, rule3]
+    sets = [set1, set2, set3]
 
-delimiters = 'DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;'
-soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'
+    delimiters = 'DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;'
+    soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'
 
-cg = CG(delimiters, soft_delimiters, rules, sets)
-print(cg)
+    cg = CG(delimiters, soft_delimiters, rules, sets)
+    print(cg)
+
+
+if __name__ == '__main__':
+    main()
