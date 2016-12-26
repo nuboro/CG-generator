@@ -129,46 +129,57 @@ def upper_limit_zero_relative(N):
     return(P)
 
 
-def frequency_count(corpus, feature):
-    N = ngram_count(corpus, 1)[(feature,)]
+def frequency_count(unigrams, feature):
+    N = unigrams[(feature,)]
     return(N)
 
 
-def relative_frequence(corpus, bigram, feature):
-    f = ngram_count(corpus, 2)[bigram]/ngram_count(corpus, 1)[(feature,)]
+def relative_frequence(bigrams, unigrams, bigram, feature):
+    f = bigrams[bigram]/unigrams[(feature,)]
     return(f)
 
 
-def probability(corpus, bigram, position):
+def probability(bigrams, unigrams, corpus, bigram, position):
     P_of_bigram = {}
     feat_in_con = collections.namedtuple('feat_in_con', 'bigram feature')
     feature = bigram[position]
-    P = get_upper_limit(corpus, feature, bigram)
+    P = get_upper_limit(bigrams, unigrams,corpus, feature, bigram)
     P_of_bigram[feat_in_con(bigram, position)] = P
     return(P_of_bigram)
 
 
-def get_upper_limit(corpus, feature, bigram):
-    N = frequency_count(corpus, feature)
-    f = relative_frequence(corpus, bigram, feature)
-    if bigram in ngram_count(corpus, 2):
+def get_upper_limit(bigrams, unigrams, corpus, feature, bigram):
+    N = frequency_count(unigrams, feature)
+    f = relative_frequence(bigrams, unigrams, bigram, feature)
+    context = bigram[(bigram.index(feature) + 1) % 2]
+    if bigram in bigrams:
         P = (moivre_laplace_probability(corpus, bigram, f, N))
     else:
         P = (upper_limit_zero_relative(N))
     return(P)
 
-
-def pos_bigrams(items):
-    ngrams = ngram_count(items, 2)
-    return(list(ngrams.keys()))
-
-
-def prob_1C(corpus, bigram):
-    return(probability(corpus, bigram, 0))
+def pos_bigrams(corpus):
+    ngrammms = ngram_count(corpus, 2)
+    return(list(ngrammms.keys()))
 
 
-def prob_negative_1C(corpus, bigram):
-    return(probability(corpus, bigram, 1))
+def prob_1C( corpus, bigram, unigrams, bigrams):
+    return(probability( bigrams, unigrams,corpus, bigram, 0))
+
+
+def prob_negative_1C(corpus, bigram, unigrams, bigrams):
+    return(probability( bigrams, unigrams,corpus, bigram, 1))
+
+
+
+def comb_probabilities(corpus, unigrams, bigrams):
+    probabilities=[]
+    for seq in pos_bigrams(corpus):
+        probabilities.append(prob_1C(corpus, seq, unigrams, bigrams))
+        probabilities.append(prob_negative_1C(corpus, seq, unigrams, bigrams))
+
+    return(probabilities)
+
 
 
 def main():
