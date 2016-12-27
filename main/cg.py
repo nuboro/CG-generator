@@ -37,26 +37,28 @@ class Set:
 
 
 class Rule:
+    rule_name = "RULE"
+
     def __init__(self, target, match):
         self.target = target
         self.match = match
-    
-    
-
-class Select(Rule):
-    def __init__(self, target, match):
-        super().__init__(target, match)
 
     def __str__(self):
-        return("SELECT " + self.target + " IF " + self.match + ' ;')
+        return(self.rule_name + " " + self.target + " IF " + self.match + ' ;')
+
+
+class Select(Rule):
+    rule_name = "SELECT"
+
+    def __init__(self, target, match):
+        super().__init__(target, match)
 
 
 class Remove(Rule):
+    rule_name = "REMOVE"
+
     def __init__(self, target, match):
         super().__init__(target, match)
-
-    def __str__(self):
-        return("REMOVE " + self.target + " IF " + self.match + ' ;')
 
 
 class CG:
