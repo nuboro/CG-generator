@@ -23,11 +23,12 @@ from streamparser import parse_file
 
 def main():
     x = input()
+    y=input()
     corpus = parser.wordclass(parser.remove_useless(parse_file(open(x))))
     unigrams = parser.ngram_count(corpus, 1)
     bigrams = parser.ngram_count(corpus, 2)
     probabilities = parser.comb_probabilities(corpus, unigrams, bigrams)
-    local_context_rules = parser.local_context_rules(probabilities)
+    local_context_rules = parser.local_context_rules(probabilities, unigrams, y)
     sets = []
     delimiters = 'DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;'
     soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'

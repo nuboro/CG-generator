@@ -60,7 +60,7 @@ def prob(items):
     features = []
     for item in items:
         for feature in item:
-            features.append(feature) 
+            features.append(feature)
     feature_pos = {x: features.count(x)/len(items) for x in features}
 
     return(feature_pos)
@@ -139,46 +139,46 @@ def relative_frequence(bigrams, unigrams, bigram, feature):
 
 
 def probability(bigrams, unigrams, corpus, bigram, position):
+
     P_of_bigram = {}
     feat_in_con = collections.namedtuple('feat_in_con', 'bigram feature')
     feature = bigram[position]
-    P = get_upper_limit(bigrams, unigrams,corpus, feature, bigram)
+    P = get_upper_limit(bigrams, unigrams, corpus, feature, bigram)
     P_of_bigram[feat_in_con(bigram, position)] = P
     return(P_of_bigram)
 
 
 def get_upper_limit(bigrams, unigrams, corpus, feature, bigram):
-    N = frequency_count(unigrams, feature)
-    f = relative_frequence(bigrams, unigrams, bigram, feature)
     context = bigram[(bigram.index(feature) + 1) % 2]
+    N = frequency_count(unigrams, feature)
     if bigram in bigrams:
+        f = relative_frequence(bigrams, unigrams, bigram, feature)
         P = (moivre_laplace_probability(corpus, bigram, f, N))
     else:
         P = (upper_limit_zero_relative(N))
     return(P)
 
-def pos_bigrams(corpus):
-    ngrammms = ngram_count(corpus, 2)
-    return(list(ngrammms.keys()))
 
-
-def prob_1C( corpus, bigram, unigrams, bigrams):
-    return(probability( bigrams, unigrams,corpus, bigram, 0))
+def prob_1C(corpus, bigram, unigrams, bigrams):
+    probability_P = probability(bigrams, unigrams, corpus, bigram, 0)
+    return(probability_P)
 
 
 def prob_negative_1C(corpus, bigram, unigrams, bigrams):
-    return(probability( bigrams, unigrams,corpus, bigram, 1))
+    probability_P = probability(bigrams, unigrams, corpus, bigram, 1)
+    return(probability_P)
 
 
 def comb_probabilities(corpus, unigrams, bigrams):
-    probabilities=[]
-    for seq in pos_bigrams(corpus):
-        probabilities.append(prob_1C(corpus, seq, unigrams, bigrams))
-        probabilities.append(prob_negative_1C(corpus, seq, unigrams, bigrams))
+    probabilities = []
+    for seq in pos_bigrams(get_tags(corpus)):
+        bigram = tuple(seq)
+        probabilities.append(prob_1C(corpus, bigram, unigrams, bigrams))
+        probabilities.append(prob_negative_1C(corpus, bigram, unigrams, bigrams))
     return(probabilities)
 
 
-def local_context_rules(probabilities):
+def local_context_rules(probabilities, unigrams, y):
     local_context_rules = []
     for probability in probabilities:
         if (list(probability.values())[0]) < 0.08:
@@ -186,13 +186,30 @@ def local_context_rules(probabilities):
             position_feature = list(probability.keys())[0].feature
             feature = bigram[position_feature]
             context = bigram[(position_feature+1) % 2]
-            if position_feature == 0:
-                rule = cg.Remove(target=feature, match="(1C " + context + ")")
-                local_context_rules.append(rule)
-            elif position_feature == 1:
-                rule = cg.Remove(target=feature, match="(-1C " + context + ")")
-                local_context_rules.append(rule)
+            if frequency_count(unigrams, feature) >= int(y) and frequency_count(unigrams, context) >= int(y):
+                if position_feature == 0:
+                    rule = cg.Remove(target=feature, match="(1C " + context + ")")
+                    local_context_rules.append(rule)
+                elif position_feature == 1:
+                    rule = cg.Remove(target=feature, match="(-1C " + context + ")")
+                    local_context_rules.append(rule)
     return(local_context_rules)
+
+
+def get_tags(corpus):
+    tags = set()
+    for features in corpus:
+        for feature in features:
+            tags.add(feature)
+    return(list(tags))
+
+
+def pos_bigrams(tags):
+    bigrams = []
+    for tag in tags:
+        for tag2 in tags:
+            bigrams.append([tag, tag2])
+    return(bigrams)
 
 
 def main():
@@ -204,5 +221,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
