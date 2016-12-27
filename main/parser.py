@@ -188,10 +188,10 @@ def local_context_rules(probabilities, unigrams, y):
             context = bigram[(position_feature+1) % 2]
             if frequency_count(unigrams, feature) >= int(y) and frequency_count(unigrams, context) >= int(y):
                 if position_feature == 0:
-                    rule = cg.Remove(target=feature, match="(1C " + context + ")")
+                    rule = cg.Remove(target=feature.upper(), match="(1C " + context.upper() + ")")
                     local_context_rules.append(rule)
                 elif position_feature == 1:
-                    rule = cg.Remove(target=feature, match="(-1C " + context + ")")
+                    rule = cg.Remove(target=feature.upper(), match="(-1C " + context.upper() + ")")
                     local_context_rules.append(rule)
     return(local_context_rules)
 
