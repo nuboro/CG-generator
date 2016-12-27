@@ -1,4 +1,5 @@
 #    Copyright (C) 2016 Bror Hultberg
+#    Copyright (C) 2016 Joonas Kylmälä
 
 #    This file is part of CG_module.
 
@@ -20,6 +21,9 @@ import cg
 import parser
 from streamparser import parse_file
 
+def make_cg_list(tag):
+    cg_list = cg.List(setname=tag.upper(), taglist=[tag])
+    return cg_list
 
 def main():
     x = input()
@@ -29,7 +33,8 @@ def main():
     bigrams = parser.ngram_count(corpus, 2)
     probabilities = parser.comb_probabilities(corpus, unigrams, bigrams)
     local_context_rules = parser.local_context_rules(probabilities, unigrams, y)
-    sets = []
+    tags = parser.get_tags(corpus)
+    sets = [make_cg_list(tag) for tag in tags]
     delimiters = 'DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;'
     soft_delimiters = 'SOFT-DELIMITERS = "<,>" ;'
     cg_file = cg.CG(delimiters, soft_delimiters, local_context_rules, sets)

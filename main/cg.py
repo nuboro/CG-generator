@@ -1,4 +1,5 @@
 #    Copyright (C) 2016 Bror Hultberg
+#    Copyright (C) 2016 Joonas Kylmälä
 
 #    This file is part of CG_module.
 
@@ -22,7 +23,8 @@ class List:
         self.taglist = taglist
 
     def __str__(self):
-        return('LIST ' + self.setname + ' = ' + self.taglist + ' ;')
+        body = "(" + " ".join(self.taglist) + ")"
+        return('LIST ' + self.setname + ' = ' + body + ' ;')
 
 
 class Set:
