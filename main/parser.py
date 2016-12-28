@@ -178,10 +178,10 @@ def comb_probabilities(corpus, unigrams, bigrams):
     return(probabilities)
 
 
-def local_context_rules(probabilities, unigrams, y):
+def local_context_rules(probabilities, unigrams, y, threshold):
     local_context_rules = []
     for probability in probabilities:
-        if (list(probability.values())[0]) < 0.08:
+        if (list(probability.values())[0]) < threshold:
             bigram = (list(probability.keys())[0].bigram)
             position_feature = list(probability.keys())[0].feature
             feature = bigram[position_feature]
