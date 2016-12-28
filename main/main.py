@@ -19,6 +19,7 @@
 
 import cg
 import parser
+import argparse
 from streamparser import parse_file
 
 
@@ -27,14 +28,29 @@ def make_cg_list(tag):
     return cg_list
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description='Generate CG rules')
+    parser.add_argument('corpus')
+    parser.add_argument('-t', '--threshold',
+                        default=0.08,
+                        type=float,
+                        help='threshold value')
+    parser.add_argument('-m', '--min-count',
+                        default=100,
+                        type=int,
+                        help='taking account only features with at least this frequency count')
+    return parser.parse_args()
+
 def main():
-    x = input()
-    y = input()
-    corpus = parser.wordclass(parser.remove_useless(parse_file(open(x))))
+    args = parse_args()
+    corpus = parser.wordclass(parser.remove_useless(parse_file(open(args.corpus))))
     unigrams = parser.ngram_count(corpus, 1)
     bigrams = parser.ngram_count(corpus, 2)
     probabilities = parser.comb_probabilities(corpus, unigrams, bigrams)
-    local_context_rules = parser.local_context_rules(probabilities, unigrams, y)
+    local_context_rules = parser.local_context_rules(probabilities,
+                                                     unigrams,
+                                                     args.min_count,
+                                                     args.threshold)
     tags = parser.get_tags(corpus)
     sets = [make_cg_list(tag) for tag in tags]
     delimiters = 'DELIMITERS = "<.>" "<!>" "<?>" "<...>" "<¶>" "<:>" ;'
