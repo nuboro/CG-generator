@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+#
 # Copyright (C) 2016 Bror Hultberg
 # Copyright (C) 2016 Joonas Kylmälä
 #
