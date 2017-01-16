@@ -9,16 +9,16 @@ input.
 ### Usage
 
 Install [streamparser](https://github.com/apertium/streamparser) to
-your computer. Then, in the directory main/, run:
+your computer. Then run:
 
 ```
-$ python3 main.py <annotated-corpus> -t <threshold> -m <min-count>
+$ ./autocg.py <annotated-corpus> -t <threshold> -m <min-count>
 ```
 
 To get the documentation of the command line options run
 
 ```
-$ python3 main.py -h
+$ ./autocg.py -h
 ```
 
 ### License
